@@ -1,8 +1,6 @@
-import page as page_node
-import pickle
-import csv
+import ignore
 import re
-import pandas as pd
+from peewee import *
 
 
 def format_links(text):
@@ -15,12 +13,28 @@ def format_links(text):
     return text
 
 
+db = MySQLDatabase('Wikilinks', user='root', passwd=ignore.password_string)
+
+class LongTextField(TextField):
+    db_field = 'longtext'
+
+class Page(Model):
+    title = CharField()
+    links = LongTextField()
+
+    class Meta:
+        database = db
+
+
+db.connect()
+
 page_text = ''
 in_page = False
 pages = []
 printed = 0
 
-with open("/Volumes/Ampharos/Wikipedia/enwiki-20170301-pages-articles.xml") as infile:
+# Change this
+with open("/Users/Mohonri/Desktop/wiki_part01.xml") as infile:
     for line in infile:
         if in_page:
             page_text += line
@@ -31,21 +45,28 @@ with open("/Volumes/Ampharos/Wikipedia/enwiki-20170301-pages-articles.xml") as i
 
                 title = re.search('<title>(.*)</title>', page_text).group(1)
 
+                # Puke
                 page_text = re.sub('(\]\])', ']]\n', page_text)
                 page_text = [x for x in re.findall('\[\[(.*)\]\]', page_text)
                              if not (x.startswith('Category:') or x.startswith('Wikipedia:') or x.startswith('File:') or
                                      x.startswith('#') or x.startswith('Project:') or x.startswith('WP:') or
                                      x.startswith('Special:') or x.startswith('User talk:') or x.startswith('S:') or
-                                     x.startswith('MOS:') or x.startswith('User:') or
+                                     x.startswith('MOS:') or x.startswith('User:') or x.startswith('Image:') or
                                      x.startswith('wikt:') or x.startswith('|') or x.startswith(':') or len(x) == 0)]
                 links = [format_links(x) for x in page_text]
+
+                Page(title=title, links="###".join(links)).save()
+
+                # print(links)
 
                 temp_thing = [title] + links
 
                 pages.append(temp_thing)
-                if not (len(pages) % 10000):
-                    print(len(pages))
+
+                # if not (len(pages) % 10000):
+                #     print(len(pages))
                 continue
+
         elif '<page>' in line:
             if '</page>' in line:
                 pages.extend([line])  # I don't think this happens so... error checking nope
@@ -55,24 +76,8 @@ with open("/Volumes/Ampharos/Wikipedia/enwiki-20170301-pages-articles.xml") as i
             page_text += line
             continue
 
-        if len(pages) == 3:
+        if len(pages) == 20:
             break
 
-pandaed = pd.DataFrame(pages)
-pandaed.to_csv('csv_links.csv', index=False, header=False)
 
 
-
-# with open('csv_links.csv', 'w') as myfile:
-#     wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
-#     wr.writerow(pages)
-
-
-#
-# with open('wiki_links.pickle', 'wb') as f:
-#     pickle.dump(pages, f)
-
-
-# kind of the last of my worries rn
-# new_list = [x for x in pages if not '<redirect' in x]
-# print(pages[1].links)

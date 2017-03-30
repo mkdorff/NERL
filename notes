@@ -1,0 +1,11 @@
+# db.create_tables([Page])
+
+# sample_page = Page(title="A", links="bob,is,happy")
+# sample_page.save()
+
+# for page in Page.select():
+#     page.delete()
+# print(page.title)
+
+# delete = Page.delete()
+# delete.execute()
