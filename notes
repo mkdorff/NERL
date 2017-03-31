@@ -9,3 +9,19 @@
 
 # delete = Page.delete()
 # delete.execute()
+
+
+x.startswith('Category:') or x.startswith('Wikipedia:') or x.startswith('File:') or
+                                     x.startswith('#') or x.startswith('Project:') or x.startswith('WP:') or
+                                     x.startswith('Special:') or x.startswith('User talk:') or x.startswith('S:') or
+                                     x.startswith('MOS:') or x.startswith('User:') or x.startswith('Image:') or
+                                     x.startswith('User_talk:') or x.startswith('Meta:') or x.startswith('Meta:') or
+                                     x.startswith('wikt:') or x.startswith('|') or x.startswith(':') or
+                                     x.startswith('Help:') or x.startswith('Template:') or x.startswith('Toollabs:') or
+                                     x.startswith('D:') or x.startswith('C:') or x.startswith('Commons:') or
+                                     x.startswith('He:') or x.startswith('Tools:') or x.startswith('Module:') or
+                                     x.startswith('Wiktionary:') or
+
+
+
+We'll have to check if the link exists. No big deal, I can't seem to clean up the links that much.

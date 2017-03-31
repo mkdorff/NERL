@@ -24,7 +24,7 @@
     </column>
     <column id="10" parent="7" name="links">
       <Position>3</Position>
-      <DataType>varchar(255)|0</DataType>
+      <DataType>longtext|0</DataType>
       <NotNull>1</NotNull>
     </column>
     <key id="11" parent="7" name="PRIMARY">
